@@ -24,15 +24,6 @@ RUN apt-get update -qq && \
     build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-#################################################################################################################
-#           OpenCV Setting
-#################################################################################################################
-RUN mkdir OpenCV-tmp && cd OpenCV-tmp && \
-    git clone https://github.com/Itseez/opencv.git && \
-    mkdir build && cd build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ../opencv  && \
-    make -j $(nproc --all) && \
-    make install
 
 #################################################################################################################
 #           User Setting
@@ -55,11 +46,13 @@ USER ssd_keras
 ARG python_version=3.5.3-0
 ARG python_qt_version=4
 RUN conda install -y python=${python_version} && \
-    pip install numpy six tensorflow==1.0.0 keras==1.2.2 prettytensor && \
+    pip install numpy six tensorflow==1.2.0 keras==2.0.5 prettytensor && \
     pip install ipdb pytest pytest-cov python-coveralls coverage==3.7.1 pytest-xdist pep8 pytest-pep8 pydot_ng && \
     conda install Pillow scikit-learn notebook pandas matplotlib seaborn pyyaml h5py && \
-    conda install -c https://conda.binstar.org/menpo opencv && \
     conda install -y pyqt=${python_qt_version} && \
+    conda clean -yt
+
+RUN conda install -y --channel https://conda.anaconda.org/menpo opencv3 && \
     conda clean -yt
 
 ENV PYTHONPATH='/src/:$PYTHONPATH'
@@ -68,6 +61,7 @@ ENV PYTHONPATH='/src/:$PYTHONPATH'
 #################################################################################################################
 #           WORK Jupyter
 #################################################################################################################
+ADD ssd_keras /src/
 WORKDIR /src
 
 EXPOSE 8888

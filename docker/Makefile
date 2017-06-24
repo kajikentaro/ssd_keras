@@ -16,7 +16,7 @@ LD_LIBRARY=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64
 # CPU environment
 
 build:
-	docker build -t ssd_keras --build-arg python_version=3.5 -f $(DOCKER_FILE) .
+	   docker build -t ssd_keras --build-arg python_version=3.5 -f $(DOCKER_FILE) .
 
 bash: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras bash
