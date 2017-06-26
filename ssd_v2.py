@@ -18,7 +18,7 @@ from ssd_layers import PriorBox
 import tensorflow as tf
 
 
-def SSD300v2(input_shape, num_classes=21):
+def SSD300v2(input_shape, num_classes=21, featurte_map=None):
     """SSD300 architecture.
 
     # Arguments
@@ -332,6 +332,10 @@ def SSD300v2(input_shape, num_classes=21):
                             name='mbox_conf_logits')(mbox_conf)
         mbox_conf = Activation('softmax',
                                name='mbox_conf_final')(mbox_conf)
+
+    if featurte_map =='conv4_3_norm_mbox_loc_flat':
+        model = Model(inputs=input_layer, outputs=conv4_3_norm_mbox_loc_flat)
+        return model
     predictions = concatenate([mbox_loc,
                                mbox_conf,
                                mbox_priorbox],
