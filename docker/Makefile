@@ -29,7 +29,7 @@ bash: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras bash
 
 ipython: build
-	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras ipython
+	$(DOCKER) run -p 8888:8888 -p6006:6006 -it -v $(SRC):/src -v $(DATA):/data ssd_keras ipython
 
 notebook: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data --net=host ssd_keras
@@ -40,7 +40,7 @@ test: build
 # GPU environment
 
 build-gpu:
-	docker build -t ssd_keras-gpu --build-arg python_version=3.5 -f $(DOCKER_FILE_GPU) .
+	$(DOCKER_GPU) build -t ssd_keras-gpu --build-arg python_version=3.5 -f $(DOCKER_FILE_GPU) .
 
 bash-gpu: build-gpu
 	$(DOCKER_GPU) run -it -v $(SRC):/src -v $(DATA):/data --env CUDA_HOME=${CUDA} \
