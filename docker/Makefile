@@ -22,6 +22,7 @@ build:
 	cp -r ../PASCAL_VOC ssd_keras/
 	cp -r ../pics ssd_keras/
 	cp -r ../testing_utils ssd_keras/
+	cp weights_SSD300.hdf5 ssd_keras/
 	$(DOCKER) build -t ssd_keras --build-arg python_version=3.5 -f $(DOCKER_FILE) .
 	rm -rf ssd_keras
 
@@ -32,7 +33,7 @@ ipython: build
 	$(DOCKER) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data ssd_keras ipython
 
 notebook: build
-	$(DOCKER) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data --net=host ssd_keras
+	$(DOCKER) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data ssd_keras
 
 test: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras pytest $(TEST)
@@ -53,7 +54,7 @@ ipython-gpu: build-gpu
 	                                                  ssd_keras-gpu ipython
 
 notebook-gpu: build-gpu
-	$(DOCKER_GPU) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data --net=host --env CUDA_HOME=${CUDA} \
+	$(DOCKER_GPU) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data --env CUDA_HOME=${CUDA} \
 	                                                  --env LD_LIBRARY_PATH=${LD_LIBRARY} \
 	                                                  ssd_keras-gpu
 
