@@ -29,10 +29,10 @@ bash: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras bash
 
 ipython: build
-	$(DOCKER) run -p 8888:8888 -p6006:6006 -it -v $(SRC):/src -v $(DATA):/data ssd_keras ipython
+	$(DOCKER) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data ssd_keras ipython
 
 notebook: build
-	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data --net=host ssd_keras
+	$(DOCKER) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data --net=host ssd_keras
 
 test: build
 	$(DOCKER) run -it -v $(SRC):/src -v $(DATA):/data ssd_keras pytest $(TEST)
@@ -48,12 +48,12 @@ bash-gpu: build-gpu
 	                                                  ssd_keras-gpu bash
 
 ipython-gpu: build-gpu
-	$(DOCKER_GPU) run -it -v $(SRC):/src -v $(DATA):/data --env CUDA_HOME=${CUDA} \
+	$(DOCKER_GPU) run -p 8888:8888 -p 6006:6006  -it -v $(SRC):/src -v $(DATA):/data --env CUDA_HOME=${CUDA} \
 	                                                  --env LD_LIBRARY_PATH=${LD_LIBRARY} \
 	                                                  ssd_keras-gpu ipython
 
 notebook-gpu: build-gpu
-	$(DOCKER_GPU) run -it -v $(SRC):/src -v $(DATA):/data --net=host --env CUDA_HOME=${CUDA} \
+	$(DOCKER_GPU) run -p 8888:8888 -p 6006:6006 -it -v $(SRC):/src -v $(DATA):/data --net=host --env CUDA_HOME=${CUDA} \
 	                                                  --env LD_LIBRARY_PATH=${LD_LIBRARY} \
 	                                                  ssd_keras-gpu
 
