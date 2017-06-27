@@ -322,24 +322,49 @@ def SSD300v2(input_shape, num_classes=21, featurte_map=None):
                                      pool6_mbox_priorbox],
                                     axis=1,
                                     name='mbox_priorbox')
+        print('{} conv4_3_norm_mbox_loc_flat'.format(conv4_3_norm_mbox_loc_flat._keras_shape))
+        print('{} conv4_3_norm_mbox_conf_flat'.format(conv4_3_norm_mbox_conf_flat._keras_shape))
+        print('{} conv4_3_norm_mbox_priorbox'.format(conv4_3_norm_mbox_priorbox))
         if hasattr(mbox_loc, '_keras_shape'):
             num_boxes = mbox_loc._keras_shape[-1] // 4
         elif hasattr(mbox_loc, 'int_shape'):
             num_boxes = K.int_shape(mbox_loc)[-1] // 4
+        print('{} num_boxes'.format(num_boxes))
+        print('{} mbox_loc'.format(mbox_loc._keras_shape))
+        print('{} mbox_conf'.format(mbox_conf._keras_shape))
         mbox_loc = Reshape((num_boxes, 4),
                            name='mbox_loc_final')(mbox_loc)
         mbox_conf = Reshape((num_boxes, num_classes),
                             name='mbox_conf_logits')(mbox_conf)
         mbox_conf = Activation('softmax',
                                name='mbox_conf_final')(mbox_conf)
+        print('{} locatation'.format(mbox_loc))
+        print('{} conf'.format(mbox_conf))
+        print('{} priorbox'.format(mbox_priorbox))
 
     if featurte_map =='conv4_3_norm_mbox_loc_flat':
-        model = Model(inputs=input_layer, outputs=conv4_3_norm_mbox_loc_flat)
-        return model
+        return set_return_model(input_layer=input_layer,
+                                output_layer=conv4_3_norm_mbox_loc_flat)
+    elif featurte_map =='fc7_mbox_loc_flat':
+        return set_return_model(input_layer=input_layer,
+                                output_layer=fc7_mbox_loc_flat)
+    elif featurte_map =='conv4_3_norm_mbox_conf_flat':
+        return set_return_model(input_layer=input_layer,
+                                output_layer=conv4_3_norm_mbox_conf_flat)
+    elif featurte_map =='fc7_mbox_conf_flat':
+        return set_return_model(input_layer=input_layer,
+                                output_layer=fc7_mbox_conf_flat)
     predictions = concatenate([mbox_loc,
                                mbox_conf,
                                mbox_priorbox],
                               axis=2,
                               name='predictions')
+    print('{} predictions'.format(predictions.shape))
+    print('{} predictions'.format(predictions))
     model = Model(inputs=input_layer, outputs=predictions)
+    return model
+
+
+def set_return_model(input_layer, output_layer):
+    model = Model(inputs=input_layer, outputs=output_layer)
     return model
