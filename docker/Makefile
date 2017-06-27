@@ -41,7 +41,15 @@ test: build
 # GPU environment
 
 build-gpu:
+	mkdir -p ssd_keras
+	cp ../*.py ssd_keras/
+	cp ../*.ipynb ssd_keras/
+	cp -r ../PASCAL_VOC ssd_keras/
+	cp -r ../pics ssd_keras/
+	cp -r ../testing_utils ssd_keras/
+	cp weights_SSD300.hdf5 ssd_keras/
 	$(DOCKER_GPU) build -t ssd_keras-gpu --build-arg python_version=3.5 -f $(DOCKER_FILE_GPU) .
+	rm -rf ssd_keras
 
 bash-gpu: build-gpu
 	$(DOCKER_GPU) run -it -v $(SRC):/src -v $(DATA):/data --env CUDA_HOME=${CUDA} \
