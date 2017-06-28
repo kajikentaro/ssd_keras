@@ -14,16 +14,19 @@
 # --- Function --------------------------------------------
 # -- Body ---------------------------------------------------------
 
-SRC=$(shell dirname `pwd`)
+SRC=`pwd`
 TRAIN_SCRIPT="/src/run_ssd_trainer.py"
-DOCKER_IMAGE="ssd_keras"
+DOCKER_IMAGE="ssd_keras-gpu"
 CUDA=/usr/local/cuda
 LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda-8.0/extras/CUPTI/lib64/
+PYTHONPATH=/src:/src/train
+
 
 nvidia-docker run --privileged --name="ssd_model" -p 8888:8888 -p 6006:6006 \
+                  -e PYTHONPATH=${PYTHONPATH} \
                   -e LD_LIBRARY_PATH=${LD_LIBRARY_PATH} \
                   -e CUDA_HOME=${CUDA} \
                   -v /etc/localtime:/etc/localtime:ro \
                   -v /usr/local/cuda:/usr/local/cuda \
-                  -d -v $(SRC):/src  \
+                  -d -v ${SRC}:/src  \
                   -it ${DOCKER_IMAGE} bash -c "python ${TRAIN_SCRIPT} "
