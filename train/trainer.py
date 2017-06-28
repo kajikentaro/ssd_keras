@@ -3,7 +3,6 @@
 import pickle
 from ssd_utils import BBoxUtility
 from generator import Generator
-import keras
 from ssd_training import MultiboxLoss
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
