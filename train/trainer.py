@@ -91,7 +91,7 @@ class Trainer(object):
         """
         tictoc = strftime("%a_%d_%b_%Y_%H_%M_%S", gmtime())
         directory_name = tictoc
-        self.log_dir = directory_name
+        self.log_dir = "./log/" + directory_name
         os.mkdir(self.log_dir)
         tensorboard = TensorBoard(log_dir=self.log_dir, histogram_freq=1,
                                   write_graph=True, )
