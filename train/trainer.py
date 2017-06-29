@@ -29,7 +29,7 @@ class Trainer(object):
                  freeze=('input_1', 'conv1_1', 'conv1_2', 'pool1',
                          'conv2_1', 'conv2_2', 'pool2',
                          'conv3_1', 'conv3_2', 'conv3_3', 'pool3'),
-                 save_weight_file='./checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
+                 save_weight_file='./resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
                  optim=None,
                 ):
         """
