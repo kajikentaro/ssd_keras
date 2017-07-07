@@ -79,7 +79,7 @@ class PriorBox(Layer):
         Add possibility not to have variances.
         Add Theano support
     """
-    def __init__(self, img_size, min_size, max_size=None, aspect_ratios=None,
+    def __init__(self, img_size=(300.0, 300.0), min_size=30.0, max_size=None, aspect_ratios=None,
                  flip=True, variances=[0.1], clip=True, **kwargs):
         if K.image_dim_ordering() == 'tf':
             self.waxis = 2
