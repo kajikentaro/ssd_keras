@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from xml.etree import ElementTree
+import argparse
 
 class XML_preprocessor(object):
 
@@ -85,7 +86,15 @@ class XML_preprocessor(object):
         return one_hot_vector
 
 ## example on how to use it
-# import pickle
-# data = XML_preprocessor('VOC2007/Annotations/').data
-# pickle.dump(data,open('VOC2007.p','wb'))
+import pickle
+parser = argparse.ArgumentParser(description="Training voxnex with keras")
+parser.add_argument("train_or_test",
+                    help="set train or test")
+args = parser.parse_args()
+if args.train_or_test == 'train':
+    data = XML_preprocessor('VOCdevkit/VOC2007/Annotations/').data
+    pickle.dump(data,open('VOC2007.pkl','wb'))
+elif args.train_or_test == 'test':
+    data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/').data
+    pickle.dump(data,open('log/VOC2007_test.pkl','wb'))
 
