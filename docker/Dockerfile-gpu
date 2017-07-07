@@ -37,8 +37,6 @@ RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     mkdir -p /src && \
     chown ssd_keras /src
 
-USER ssd_keras
-
 #################################################################################################################
 #           Python Setting
 #################################################################################################################
@@ -46,7 +44,6 @@ USER ssd_keras
 ARG python_version=3.5.3-0
 ARG python_qt_version=4
 RUN conda install -y python=${python_version} && \
-    pip install numpy six tensorflow==1.2.0 keras==2.0.5 prettytensor && \
     pip install ipdb pytest pytest-cov python-coveralls coverage==3.7.1 pytest-xdist pep8 pytest-pep8 pydot_ng && \
     conda install Pillow scikit-learn notebook pandas matplotlib seaborn pyyaml h5py && \
     conda install -y pyqt=${python_qt_version} && \
@@ -56,7 +53,59 @@ RUN conda install -y --channel https://conda.anaconda.org/menpo opencv3 && \
     conda clean -yt
 
 ENV PYTHONPATH='/src/:$PYTHONPATH'
+#################################################################################################################
+#           Bazel Setting
+#################################################################################################################
+ADD install_bazel.sh /home/$DL_USER/install.sh
+RUN sh /home/$DL_USER/install.sh
+#################################################################################################################
+#           Deep Learning Setting
+#################################################################################################################
+ARG TENSORFLOW_VERSION=1.0.1
+ARG TENSORFLOW_DEVICE=gpu
+ARG TENSORFLOW_APPEND=_gpu
+ENV TF_BUILD_CONTAINER_TYPE=GPU
+ENV TF_BUILD_PYTHON_VERSION=PYTHON3.5
+ENV TF_BUILD_IS_OPT=OPT
+ENV TF_BUILD_IS_PIP=BOTH
+ENV TF_BUILD_ENABLE_XLA=1
+ENV PYTHON_BIN_PATH=/opt/conda/bin/python
+ENV CC_OPT_FLAGS="--config=opt"
+ENV TF_NEED_GCP=0
+ENV TF_NEED_HDFS=0
+ENV TF_ENABLE_XLA=1
+ENV TF_NEED_JEMALLOC=1
+ENV TF_NEED_OPENCL=1
+ENV TF_NEED_CUDA=1
+ENV TF_CUDA_VERSION=8.0
+ENV GCC_HOST_COMPILER_PATH=/usr/bin/gcc
+ENV USE_DEFAULT_PYTHON_LIB_PATH=1
+ENV PYTHON_LIB_PATH=/usr/lib/python3/dist-packages
+ENV HOST_CXX_COMPILER=/usr/bin/g++
+ENV CUDA_TOOLKIT_PATH=/usr/local/cuda
+ENV CUDA_PATH=/usr/local/cuda
+ENV CUDNN_INSTALL_PATH=/usr/local/cuda
+ENV TF_CUDNN_VERSION=5
+ENV HOST_CXX_COMPILER=/usr/bin/g++
+ENV HOST_C_COMPILER=/usr/bin/gcc
+ENV COMPUTECPP_TOOLKIT_PATH=/usr/local/computecpp
+ENV TF_CUDA_COMPUTE_CAPABILITIES="3.5,5.2"
+ENV CLANG_CUDA_COMPILER_PATH=/usr/local/cuda/bin/nvcc
+ENV TF_CUDA_CLANG=0
+ENV TF_NEED_VERBS=0
+ENV TF_NEED_MKL=1
+ENV TF_DOWNLOAD_MKL=1
+ADD ComputeCpp-CE-0.1.2-Ubuntu.14.04-64bit.tar.gz /home/
+RUN mkdir -p /usr/local/computecpp/ && mv /home/ComputeCpp-CE-0.1.2-Linux/* /usr/local/computecpp/
+RUN git clone https://github.com/tensorflow/tensorflow.git /home/tensorflow && cd /home/tensorflow && git checkout r1.1
+RUN cd /home/tensorflow && ./configure
+RUN cd /home/tensorflow && bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both  --config=cuda -k //tensorflow/tools/pip_package:build_pip_package
+RUN cd /home/tensorflow && bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+RUN pip install /tmp/tensorflow_pkg/tensorflow-1.1.0-cp35-cp35m-linux_x86_64.whl && \ 
+    pip install numpy six keras==2.0.5 prettytensor
 
+
+# USER ssd_keras
 
 #################################################################################################################
 #           WORK Jupyter
