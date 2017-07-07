@@ -29,7 +29,7 @@ class Trainer(object):
                  freeze=('input_1', 'conv1_1', 'conv1_2', 'pool1',
                          'conv2_1', 'conv2_2', 'pool2',
                          'conv3_1', 'conv3_2', 'conv3_3', 'pool3'),
-                 save_weight_file='./resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
+                 save_weight_file='/src/resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
                  optim=None,
                 ):
         """
@@ -52,7 +52,7 @@ class Trainer(object):
         self.train_keys = keys[:num_train]
         self.val_keys = keys[num_train:]
         self.num_val = len(self.val_keys)
-        self.gen = Generator(self.train_data, self.bbox_utils, 4, path_prefix,
+        self.gen = Generator(self.train_data, self.bbox_utils, 20, path_prefix,
                              self.train_keys, self.val_keys,
                              (self.input_shape[0], self.input_shape[1]),
                              do_crop=False)

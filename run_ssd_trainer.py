@@ -26,7 +26,7 @@ def main():
                         dest="weight_file", help="set the weight file")
     parser.add_argument("-s", "--save_weight_file", metavar="save_weight_file",
                         type=str,
-                        default='./checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+                        default='./resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                         dest="save_weight_file", help="set the save weight file")
     parser.add_argument("-n", "--nb_epoch", metavar="nb_epoch",
                         type=int,

@@ -96,5 +96,5 @@ if args.train_or_test == 'train':
     pickle.dump(data,open('VOC2007.pkl','wb'))
 elif args.train_or_test == 'test':
     data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/').data
-    pickle.dump(data,open('VOC2007_test.pkl','wb'))
+    pickle.dump(data,open('log/VOC2007_test.pkl','wb'))
 
