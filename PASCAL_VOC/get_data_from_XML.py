@@ -63,11 +63,17 @@ parser.add_argument("xml_data_path", default="VOCdevkit/VOC2007/Annotations/",
 parser.add_argument("out_pkl_file", default="VOC2007.pkl",
                     type=str,
                     help="set output pkl file name")
+parser.add_argument("-c", "--classes", metavar="classes",
+                    type=int,
+                    default=20,
+                    dest="classes", help="set the number of classes")
 args = parser.parse_args()
 if args.train_or_test == 'train':
-    data = XML_preprocessor(args.xml_data_path).data
+    data = XML_preprocessor(args.xml_data_path,
+                            num_classes=args.classes).data
     pickle.dump(data,open(args.out_pkl_file, 'wb'))
 elif args.train_or_test == 'test':
-    data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/').data
+    data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/',
+                            num_classes=args.classes).data
     pickle.dump(data,open('log/VOC2007_test.pkl','wb'))
 
