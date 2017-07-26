@@ -42,7 +42,7 @@ class XML_preprocessor(object):
 
     def _to_one_hot(self,name):
         one_hot_vector = [0] * self.num_classes
-        with open("/conf/class_id.yml") as cf:  # noqa
+        with open("conf/class_id.yml") as cf:  # noqa
             class_id = yaml.load(cf)
         class_id_to_name = \
             class_id["class_id_to_name_ssd"]
