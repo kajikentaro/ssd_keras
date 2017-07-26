@@ -2,12 +2,14 @@ import numpy as np
 import os
 from xml.etree import ElementTree
 import argparse
+import yaml
 
 class XML_preprocessor(object):
 
-    def __init__(self, data_path):
+    def __init__(self, data_path: str='',
+                 num_classes: int=20):
         self.path_prefix = data_path
-        self.num_classes = 20
+        self.num_classes = num_classes
         self.data = dict()
         self._preprocess_XML()
 
@@ -40,48 +42,12 @@ class XML_preprocessor(object):
 
     def _to_one_hot(self,name):
         one_hot_vector = [0] * self.num_classes
-        if name == 'aeroplane':
-            one_hot_vector[0] = 1
-        elif name == 'bicycle':
-            one_hot_vector[1] = 1
-        elif name == 'bird':
-            one_hot_vector[2] = 1
-        elif name == 'boat':
-            one_hot_vector[3] = 1
-        elif name == 'bottle':
-            one_hot_vector[4] = 1
-        elif name == 'bus':
-            one_hot_vector[5] = 1
-        elif name == 'car':
-            one_hot_vector[6] = 1
-        elif name == 'cat':
-            one_hot_vector[7] = 1
-        elif name == 'chair':
-            one_hot_vector[8] = 1
-        elif name == 'cow':
-            one_hot_vector[9] = 1
-        elif name == 'diningtable':
-            one_hot_vector[10] = 1
-        elif name == 'dog':
-            one_hot_vector[11] = 1
-        elif name == 'horse':
-            one_hot_vector[12] = 1
-        elif name == 'motorbike':
-            one_hot_vector[13] = 1
-        elif name == 'person':
-            one_hot_vector[14] = 1
-        elif name == 'pottedplant':
-            one_hot_vector[15] = 1
-        elif name == 'sheep':
-            one_hot_vector[16] = 1
-        elif name == 'sofa':
-            one_hot_vector[17] = 1
-        elif name == 'train':
-            one_hot_vector[18] = 1
-        elif name == 'tvmonitor':
-            one_hot_vector[19] = 1
-        else:
-            print('unknown label: %s' %name)
+        with open("/conf/class_id.yml") as cf:  # noqa
+            class_id = yaml.load(cf)
+        class_id_to_name = \
+            class_id["class_id_to_name_ssd"]
+        for key, value in class_id_to_name.items():
+            one_hot_vector[key - 1] = 1
 
         return one_hot_vector
 
@@ -90,10 +56,14 @@ import pickle
 parser = argparse.ArgumentParser(description="Training voxnex with keras")
 parser.add_argument("train_or_test",
                     help="set train or test")
+parser.add_argument("xml_data_path", default="VOCdevkit/VOC2007/Annotations/",
+                    help="set xml_data_path")
+parser.add_argument("out_pkl_file", default="VOC2007.pkl",
+                    help="set output pkl file name")
 args = parser.parse_args()
 if args.train_or_test == 'train':
-    data = XML_preprocessor('VOCdevkit/VOC2007/Annotations/').data
-    pickle.dump(data,open('VOC2007.pkl','wb'))
+    data = XML_preprocessor(args.xml_data_path).data
+    pickle.dump(data,open(args.out_pkl_file,'wb'))
 elif args.train_or_test == 'test':
     data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/').data
     pickle.dump(data,open('log/VOC2007_test.pkl','wb'))
