@@ -55,15 +55,18 @@ class XML_preprocessor(object):
 import pickle
 parser = argparse.ArgumentParser(description="Training voxnex with keras")
 parser.add_argument("train_or_test",
+                    type=str,
                     help="set train or test")
 parser.add_argument("xml_data_path", default="VOCdevkit/VOC2007/Annotations/",
+                    type=str,
                     help="set xml_data_path")
 parser.add_argument("out_pkl_file", default="VOC2007.pkl",
+                    type=str,
                     help="set output pkl file name")
 args = parser.parse_args()
 if args.train_or_test == 'train':
     data = XML_preprocessor(args.xml_data_path).data
-    pickle.dump(data,open(args.out_pkl_file,'wb'))
+    pickle.dump(data,open(args.out_pkl_file, 'wb'))
 elif args.train_or_test == 'test':
     data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/').data
     pickle.dump(data,open('log/VOC2007_test.pkl','wb'))
