@@ -62,8 +62,9 @@ class Trainer(object):
         self.save_weight_file = save_weight_file
         self.optim = optim
         self.model.compile(optimizer=optim,
-                      loss=MultiboxLoss(class_number,
-                                        neg_pos_ratio=2.0).compute_loss)
+                           metrics=['accuracy'],
+                           loss=MultiboxLoss(class_number,
+                                             neg_pos_ratio=2.0).compute_loss)
 
     def train(self, nb_epoch):
         """
@@ -82,7 +83,7 @@ class Trainer(object):
                                       callbacks=callbacks,
                                       validation_data=self.gen.generate(False),
                                       nb_val_samples=self.gen.val_batches,
-                                      nb_worker=1)
+                                      nb_worker=10)
 
     def __make_tensorboard(self):
         """
