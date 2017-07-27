@@ -5,6 +5,7 @@ from random import shuffle
 from scipy.misc import imread
 from scipy.misc import imresize
 from keras.applications.imagenet_utils import preprocess_input
+import cv2
 
 
 class Generator(object):
@@ -149,12 +150,25 @@ class Generator(object):
             inputs = []
             targets = []
             for key in keys:
-                img_path = self.path_prefix + key
+                if '.png' in key:
+                    img_path = self.path_prefix + key
+                else:
+                    img_path = self.path_prefix + key + '.png'
                 img = imread(img_path).astype('float32')
+                y = self.gt[key].copy()
+                try:
+                    img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+                except:
+                    print('failed gray to rgb image %s' % (img_path,))
+                    continue
                 y = self.gt[key].copy()
                 if train and self.do_crop:
                     img, y = self.random_sized_crop(img, y)
-                img = imresize(img, self.image_size).astype('float32')
+                try:
+                    img = imresize(img, self.image_size).astype('float32')
+                except:
+                    print('failed resizing image %s' % (img_path,))
+                    continue
                 if train:
                     shuffle(self.color_jitter)
                     for jitter in self.color_jitter:
