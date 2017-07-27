@@ -81,7 +81,7 @@ class Trainer(object):
                                            self.gen.train_batches,
                                       nb_epoch, verbose=1,
                                       callbacks=callbacks,
-                                      validation_data=self.gen.generate(False),
+                                      validation_data=self.gen.generate(True),
                                       nb_val_samples=self.gen.val_batches,
                                       nb_worker=10)
 
