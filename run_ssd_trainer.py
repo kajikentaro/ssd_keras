@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # from trainer import Trainer
+import pyximport
+pyximport.install()
 from cython_train.trainer_cython import Trainer
 from ssd_v2 import SSD300v2
 import keras
