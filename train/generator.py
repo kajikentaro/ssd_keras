@@ -6,6 +6,7 @@ from scipy.misc import imread
 from scipy.misc import imresize
 from keras.applications.imagenet_utils import preprocess_input
 import cv2
+from PIL import Image
 
 
 class Generator(object):
@@ -150,17 +151,19 @@ class Generator(object):
             inputs = []
             targets = []
             for key in keys:
-                if '.png' in key:
+                if '.png' in key or '.jpg' in key:
                     img_path = self.path_prefix + key
                 else:
                     img_path = self.path_prefix + key + '.png'
                 img = imread(img_path).astype('float32')
                 y = self.gt[key].copy()
-                try:
-                    img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-                except:
-                    print('failed gray to rgb image %s' % (img_path,))
-                    continue
+                check_gray_image = self.is_grey_scale(img_path=img_path)
+                if check_gray_image:
+                    try:
+                        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+                    except:
+                        print('failed gray to rgb image %s' % (img_path,))
+                        continue
                 y = self.gt[key].copy()
                 if train and self.do_crop:
                     img, y = self.random_sized_crop(img, y)
@@ -189,3 +192,11 @@ class Generator(object):
                     targets = []
                     yield preprocess_input(tmp_inp), tmp_targets
 
+    def is_grey_scale(self, img_path="lena.jpg"):
+        im = Image.open(img_path).convert('RGB')
+        w, h = im.size
+        for i in range(w):
+            for j in range(h):
+                r, g, b = im.getpixel((i, j))
+                if r != g != b: return False
+        return True
