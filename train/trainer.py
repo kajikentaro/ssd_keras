@@ -31,6 +31,8 @@ class Trainer(object):
                          'conv3_1', 'conv3_2', 'conv3_3', 'pool3'),
                  save_weight_file='/src/resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
                  optim=None,
+                 batch_size=20,
+                 nb_worker=1
                 ):
         """
         Setting below parameter 
@@ -52,7 +54,7 @@ class Trainer(object):
         self.train_keys = keys[:num_train]
         self.val_keys = keys[num_train:]
         self.num_val = len(self.val_keys)
-        self.gen = Generator(self.train_data, self.bbox_utils, 20, path_prefix,
+        self.gen = Generator(self.train_data, self.bbox_utils, batch_size, path_prefix,
                              self.train_keys, self.val_keys,
                              (self.input_shape[0], self.input_shape[1]),
                              do_crop=True)
@@ -61,6 +63,7 @@ class Trainer(object):
         self.freeze = list(freeze)
         self.save_weight_file = save_weight_file
         self.optim = optim
+        self.nb_worker = nb_worker
         self.model.compile(optimizer=optim,
                            metrics=['accuracy'],
                            loss=MultiboxLoss(class_number,
@@ -82,9 +85,9 @@ class Trainer(object):
                                            nb_epoch, verbose=1,
                                            callbacks=callbacks,
                                            validation_data=self.gen.generate(
-                                               True),
+                                               False),
                                            nb_val_samples=self.gen.val_batches,
-                                           nb_worker=1)
+                                           nb_worker=self.nb_worker)
 
     def __make_tensorboard(self):
         """
