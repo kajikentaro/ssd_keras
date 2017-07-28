@@ -22,7 +22,7 @@ build:
 	cp -r ../PASCAL_VOC ssd_keras/
 	cp -r ../pics ssd_keras/
 	cp -r ../testing_utils ssd_keras/
-	cp weights_SSD300.hdf5 ssd_keras/
+	cp ../weights_SSD300.hdf5 ssd_keras/
 	$(DOCKER) build -t ssd_keras --build-arg python_version=3.5 -f $(DOCKER_FILE) .
 	rm -rf ssd_keras
 
@@ -47,7 +47,7 @@ build-gpu:
 	cp -r ../PASCAL_VOC ssd_keras/
 	cp -r ../pics ssd_keras/
 	cp -r ../testing_utils ssd_keras/
-	cp weights_SSD300.hdf5 ssd_keras/
+	cp ../weights_SSD300.hdf5 ssd_keras/
 	$(DOCKER_GPU) build -t ssd_keras-gpu --build-arg python_version=3.5 -f $(DOCKER_FILE_GPU) .
 	rm -rf ssd_keras
 

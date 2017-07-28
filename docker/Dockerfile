@@ -60,11 +60,7 @@ ENV PYTHONPATH='/src/:$PYTHONPATH'
 #################################################################################################################
 #           Visualize
 #################################################################################################################
-RUN pip install pycallgraph && \
-    echo 'deb http://security.ubuntu.com/ubuntu lucid-security main' >> /etc/apt/sources.list && \
-    echo 'deb http://cz.archive.ubuntu.com/ubuntu lucid main' >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install graphviz
+RUN pip install pycallgraph
 #################################################################################################################
 #           WORK Jupyter
 #################################################################################################################
