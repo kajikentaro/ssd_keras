@@ -95,3 +95,8 @@ ENV/
 
 # Pycharm project settings
 .idea/
+
+*.h5
+
+# Data
+pics/*.png
