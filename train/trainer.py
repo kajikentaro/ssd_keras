@@ -55,7 +55,7 @@ class Trainer(object):
         self.gen = Generator(self.train_data, self.bbox_utils, 20, path_prefix,
                              self.train_keys, self.val_keys,
                              (self.input_shape[0], self.input_shape[1]),
-                             do_crop=False)
+                             do_crop=True)
         self.model = model
         model.load_weights(weight_file, by_name=True)
         self.freeze = list(freeze)
@@ -79,11 +79,12 @@ class Trainer(object):
         callbacks.append(self.__make_tensorboard())
         history = self.model.fit_generator(self.gen.generate(True),
                                            self.gen.train_batches,
-                                      nb_epoch, verbose=1,
-                                      callbacks=callbacks,
-                                      validation_data=self.gen.generate(True),
-                                      nb_val_samples=self.gen.val_batches,
-                                      nb_worker=10)
+                                           nb_epoch, verbose=1,
+                                           callbacks=callbacks,
+                                           validation_data=self.gen.generate(
+                                               True),
+                                           nb_val_samples=self.gen.val_batches,
+                                           nb_worker=1)
 
     def __make_tensorboard(self):
         """
