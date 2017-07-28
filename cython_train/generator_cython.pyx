@@ -157,6 +157,7 @@ class Generator(object):
                     img_path = self.path_prefix + key + '.png'
                 img = imread(img_path).astype('float32')
                 y = self.gt[key].copy()
+                # Too slow
                 check_gray_image = self.is_grey_scale(img_path=img_path)
                 if check_gray_image:
                     try:
