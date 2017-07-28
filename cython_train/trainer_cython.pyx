@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import pickle
-from ssd_utils import BBoxUtility
-from generator import Generator
-from ssd_training import MultiboxLoss
+
+import pyximport
+
+pyximport.install()
+from generator_cython import Generator
+from ssd_utils_cython import BBoxUtility
+from ssd_training_cython import MultiboxLoss
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import gmtime, strftime
