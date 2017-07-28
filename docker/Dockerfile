@@ -37,7 +37,6 @@ RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     mkdir -p /src && \
     chown ssd_keras /src
 
-USER ssd_keras
 
 #################################################################################################################
 #           Python Setting
@@ -59,10 +58,19 @@ ENV PYTHONPATH='/src/:$PYTHONPATH'
 
 
 #################################################################################################################
+#           Visualize
+#################################################################################################################
+RUN pip install pycallgraph && \
+    echo 'deb http://security.ubuntu.com/ubuntu lucid-security main' >> /etc/apt/sources.list && \
+    echo 'deb http://cz.archive.ubuntu.com/ubuntu lucid main' >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install graphviz
+#################################################################################################################
 #           WORK Jupyter
 #################################################################################################################
 ADD ssd_keras /src/
 WORKDIR /src
+USER ssd_keras
 
 EXPOSE 8888
 
