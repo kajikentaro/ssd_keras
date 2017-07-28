@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# from trainer import Trainer
-from cython_train.trainer_cython import Trainer
+from trainer import Trainer
 from ssd_v2 import SSD300v2
 import keras
 import argparse
