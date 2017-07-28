@@ -125,6 +125,7 @@ RUN pip install Cython
 #           WORK Jupyter
 #################################################################################################################
 ADD ssd_keras /src/
+ENV PTYHONPATH=$PYTHONPATH:/src/cython_train/
 WORKDIR /src
 
 EXPOSE 8888

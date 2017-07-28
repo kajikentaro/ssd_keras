@@ -5,9 +5,9 @@ import pickle
 import pyximport
 
 pyximport.install()
-from generator_cython import Generator
-from ssd_utils_cython import BBoxUtility
-from ssd_training_cython import MultiboxLoss
+from cython_train.generator_cython import Generator
+from cython_train.ssd_utils_cython import BBoxUtility
+from cython_train.ssd_training_cython import MultiboxLoss
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import gmtime, strftime
