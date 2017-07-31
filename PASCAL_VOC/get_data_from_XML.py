@@ -7,10 +7,13 @@ import yaml
 class XML_preprocessor(object):
 
     def __init__(self, data_path: str='',
-                 num_classes: int=20):
+                 num_classes: int=20,
+                 conf_file: str='conf/class_id.yml',
+                 ):
         self.path_prefix = data_path
         self.num_classes = num_classes
         self.data = dict()
+        self.conf_file = conf_file
         self._preprocess_XML()
 
     def _preprocess_XML(self):
@@ -42,7 +45,7 @@ class XML_preprocessor(object):
 
     def _to_one_hot(self,name):
         one_hot_vector = [0] * self.num_classes
-        with open("conf/class_id.yml") as cf:  # noqa
+        with open(self.conf_file) as cf:  # noqa
             class_id = yaml.load(cf)
         class_id_to_name = \
             class_id["class_id_to_name_ssd"]
@@ -67,6 +70,10 @@ parser.add_argument("-c", "--classes", metavar="classes",
                     type=int,
                     default=20,
                     dest="classes", help="set the number of classes")
+parser.add_argument("-C", "--conf_file", metavar="conf_file",
+                    type=str,
+                    default='conf/class_id.yml',
+                    dest="conf file setting", help="set the config file")
 args = parser.parse_args()
 if args.train_or_test == 'train':
     data = XML_preprocessor(args.xml_data_path,
