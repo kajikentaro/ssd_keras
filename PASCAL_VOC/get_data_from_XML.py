@@ -77,7 +77,8 @@ parser.add_argument("-C", "--conf_file", metavar="conf_file",
 args = parser.parse_args()
 if args.train_or_test == 'train':
     data = XML_preprocessor(args.xml_data_path,
-                            num_classes=args.classes).data
+                            num_classes=args.classes,
+                            conf_file=args.conf_file).data
     pickle.dump(data,open(args.out_pkl_file, 'wb'))
 elif args.train_or_test == 'test':
     data = XML_preprocessor('VOCdevkit/VOC2007/Annotations_test/',
