@@ -58,10 +58,13 @@ class Trainer(object):
         self.train_keys = keys[:num_train]
         self.val_keys = keys[num_train:]
         self.num_val = len(self.val_keys)
+        self.batch_size = batch_size
         self.gen = Generator(self.train_data, self.bbox_utils, batch_size, path_prefix,
                              self.train_keys, self.val_keys,
                              (self.input_shape[0], self.input_shape[1]),
-                             do_crop=True)
+                             saturation_var=0.0, brightness_var=0.0, contrast_var=0.0, lighting_std=0.0,
+                             hflip_prob=0.0, vflip_prob=0.0,
+                             do_crop=False)
         self.model = model
         model.load_weights(weight_file, by_name=True)
         self.freeze = list(freeze)
@@ -85,7 +88,7 @@ class Trainer(object):
                                      save_weights_only=True)]
         callbacks.append(self.__make_tensorboard())
         history = self.model.fit_generator(self.gen.generate(True),
-                                           self.gen.train_batches,
+                                           self.gen.train_batches // self.batch_size,
                                            nb_epoch, verbose=1,
                                            callbacks=callbacks,
                                            validation_data=self.gen.generate(
