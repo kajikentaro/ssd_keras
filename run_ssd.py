@@ -7,7 +7,8 @@ from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import image
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.misc import imread
+#from scipy.misc import imread
+from imageio import imread
 import tensorflow as tf
 
 from ssd_v2 import SSD300v2
